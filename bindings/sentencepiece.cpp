@@ -3,7 +3,7 @@
 #include "../sentencepiece/src/sentencepiece_processor.h"
 
 class StringView {
-  private: 
+  private:
     std::string str;
     absl::string_view view;
   public:
@@ -16,7 +16,7 @@ class StringView {
     }
 };
 
-template <typename T> emscripten::val vecToView(std::vector<T> vec) {
+template <typename T> emscripten::val vecToView(const std::vector<T>& vec) {
   return emscripten::val(emscripten::typed_memory_view(vec.size(),vec.data()));
 }
 
@@ -24,7 +24,7 @@ EMSCRIPTEN_BINDINGS(sentencepiece) {
   emscripten::register_vector<std::string>("VectorString");
   emscripten::register_vector<int>("VectorInt");
 
-  emscripten::function("vecToView",emscripten::select_overload<emscripten::val(std::vector<int>)>(&vecToView));
+  emscripten::function("vecToView",emscripten::select_overload<emscripten::val(const std::vector<int>&)>(&vecToView));
   emscripten::function("vecFromJSArray",emscripten::select_overload<std::vector<int>(const emscripten::val &)>(&emscripten::vecFromJSArray));
 
   emscripten::class_<sentencepiece::util::Status>("Status")
